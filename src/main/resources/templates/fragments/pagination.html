@@ -1,0 +1,9 @@
+<div th:fragment="pager(pageObj, baseUrl)" class="d-flex justify-content-between align-items-center mt-3">
+  <a class="btn btn-outline-secondary btn-sm"
+     th:classappend="${pageObj.first} ? ' disabled'"
+     th:href="@{${baseUrl}(page=${pageObj.number - 1})}">Previous</a>
+  <span class="text-muted" th:text="'Page ' + ${pageObj.number + 1} + ' of ' + ${pageObj.totalPages == 0 ? 1 : pageObj.totalPages}"></span>
+  <a class="btn btn-outline-secondary btn-sm"
+     th:classappend="${pageObj.last} ? ' disabled'"
+     th:href="@{${baseUrl}(page=${pageObj.number + 1})}">Next</a>
+</div>

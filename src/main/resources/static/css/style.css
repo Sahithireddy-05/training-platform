@@ -1,0 +1,7 @@
+body { background: #f6f7fb; }
+.page-shell { max-width: 1180px; margin: 0 auto; padding: 24px 16px; }
+.card { border-radius: 8px; }
+.badge-status { text-transform: uppercase; letter-spacing: .04em; }
+.muted-small { color: #667085; font-size: .9rem; }
+.table td, .table th { vertical-align: middle; }
+.pre-line { white-space: pre-line; }
