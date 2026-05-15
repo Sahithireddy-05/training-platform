@@ -7,7 +7,8 @@ Full-stack Spring Boot web application for internal training-topic requests, rec
 Prerequisites:
 - Java 17
 - Maven
-- SQL Server optional. The app runs immediately with the included H2 file database.
+- Microsoft SQL Server
+- SQL Server Management Studio (SSMS), optional but useful for inspecting data
 
 Run locally:
 
@@ -18,19 +19,27 @@ mvn spring-boot:run
 Open:
 
 ```text
-http://localhost:8080
+http://localhost:8081
 ```
 
-H2 console:
+The application uses SQL Server. Create a database named:
 
 ```text
-http://localhost:8080/h2-console
-JDBC URL: jdbc:h2:file:./data/training-platform
-User: sa
-Password: blank
+TrainingPlatformDb
 ```
 
-To use SQL Server, edit `src/main/resources/application.properties`, comment the H2 datasource, and enable the SQL Server datasource shown there.
+Then confirm `src/main/resources/application.properties` has the SQL Server connection details for your local machine:
+
+```properties
+server.port=8081
+spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=TrainingPlatformDb;encrypt=true;trustServerCertificate=true
+spring.datasource.username=sa
+spring.datasource.password=YourStrongPassword
+spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+spring.jpa.hibernate.ddl-auto=update
+```
+
+Update the username and password to match your SQL Server login.
 
 ## Tech Stack & Rationale
 
@@ -39,8 +48,8 @@ To use SQL Server, edit `src/main/resources/application.properties`, comment the
 - Spring Security for authentication and route protection.
 - BCrypt password hashing through `BCryptPasswordEncoder`.
 - Spring Data JPA and Hibernate for relational persistence.
-- H2 file database as a demo default so the reviewer can run the app quickly.
-- Microsoft SQL Server driver included for the requested SQL Server setup.
+- Microsoft SQL Server as the persistent relational database.
+- Microsoft JDBC Driver for SQL Server for database connectivity.
 
 ## Architectural Overview
 
@@ -74,7 +83,7 @@ This implementation was AI-assisted. The assistant generated the initial project
 - All authenticated users have the same global role.
 - Authorization is based on lifecycle ownership: requester, speaker, enrollee, or rater.
 - A session is represented by the scheduled fields on `Topic`, rather than a separate `Session` table, to keep the six-hour implementation lean.
-- H2 is enabled by default for fast demonstration; SQL Server can be enabled through configuration.
+- SQL Server is expected to be running locally on port `1433`, with a database named `TrainingPlatformDb`.
 
 ## Trade-offs
 
