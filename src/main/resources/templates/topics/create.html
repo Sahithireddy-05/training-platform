@@ -8,10 +8,16 @@
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
-<main class="page-shell" style="max-width: 760px">
-  <h1 class="h3 mb-3">Request a topic</h1>
+<main class="page-shell" style="max-width: 780px">
+  <div class="page-header">
+    <div>
+      <div class="page-kicker">New ask</div>
+      <h1 class="page-title">Request a topic</h1>
+      <p class="page-subtitle">Capture something the team wants to learn, then let others recommend or volunteer to teach it.</p>
+    </div>
+  </div>
   <form class="card" th:action="@{/topics}" th:object="${topicCreateDto}" method="post">
-    <div class="card-body">
+    <div class="card-body p-4">
       <div class="mb-3"><label class="form-label">Title</label><input class="form-control" th:field="*{title}"><div class="text-danger small" th:errors="*{title}"></div></div>
       <div class="mb-3"><label class="form-label">Description</label><textarea rows="6" class="form-control" th:field="*{description}"></textarea></div>
       <button class="btn btn-primary" type="submit">Create request</button>

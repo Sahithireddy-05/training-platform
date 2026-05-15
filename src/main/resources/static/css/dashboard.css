@@ -1,2 +1,28 @@
-.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-.dashboard-card { min-height: 180px; }
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.dashboard-card {
+  min-height: 200px;
+}
+
+.dashboard-card .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dashboard-link {
+  border: 1px solid #dde3ec;
+  border-radius: 8px;
+  color: #172033;
+  display: block;
+  padding: 10px 12px;
+}
+
+.dashboard-link:hover {
+  background: #f5f8fc;
+  text-decoration: none;
+}

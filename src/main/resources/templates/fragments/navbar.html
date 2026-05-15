@@ -1,6 +1,9 @@
 <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" th:href="@{/dashboard}">Training Platform</a>
+  <div class="container-fluid px-lg-4">
+    <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/dashboard}">
+      <span class="auth-brand" style="width:32px;height:32px;font-size:.85rem">TP</span>
+      <span>Training Platform</span>
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -10,8 +13,8 @@
         <li class="nav-item"><a class="nav-link" th:href="@{/topics/most-wanted}">Most Wanted</a></li>
         <li class="nav-item"><a class="nav-link" th:href="@{/topics/upcoming}">Upcoming</a></li>
         <li class="nav-item"><a class="nav-link" th:href="@{/topics/past}">Past</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/topics/new}">Request Topic</a></li>
       </ul>
+      <a class="btn btn-primary btn-sm me-2" th:href="@{/topics/new}">Request topic</a>
       <form th:action="@{/logout}" method="post" class="d-flex">
         <button class="btn btn-outline-light btn-sm" type="submit">Sign out</button>
       </form>

@@ -13,41 +13,42 @@
   <div class="row g-4">
     <div class="col-lg-8">
       <section class="card">
-        <div class="card-body">
+        <div class="card-body p-4">
           <div class="d-flex justify-content-between gap-3">
             <div>
-              <h1 class="h3" th:text="${topic.title}"></h1>
-              <span class="badge bg-secondary badge-status" th:text="${topic.status}"></span>
-            </div>
-            <div class="text-end">
-              <div class="h4 mb-0" th:text="${topic.recommendationCount}"></div>
-              <div class="muted-small">recommendations</div>
+              <div class="page-kicker">Topic detail</div>
+              <h1 class="page-title" th:text="${topic.title}"></h1>
+              <span class="badge badge-status" th:classappend="${'status-' + topic.status}" th:text="${topic.status}"></span>
             </div>
           </div>
-          <p class="pre-line mt-3" th:text="${topic.description}"></p>
-          <dl class="row mt-3">
-            <dt class="col-sm-3">Requester</dt><dd class="col-sm-9" th:text="${topic.requester.name}"></dd>
-            <dt class="col-sm-3">Speaker</dt><dd class="col-sm-9" th:text="${topic.speaker == null ? '-' : topic.speaker.name}"></dd>
-            <dt class="col-sm-3">Scheduled</dt><dd class="col-sm-9" th:text="${topic.scheduledAt == null ? '-' : #temporals.format(topic.scheduledAt, 'dd MMM yyyy HH:mm')}"></dd>
-            <dt class="col-sm-3">Duration</dt><dd class="col-sm-9" th:text="${topic.durationMinutes == null ? '-' : topic.durationMinutes + ' minutes'}"></dd>
-            <dt class="col-sm-3">Location</dt><dd class="col-sm-9" th:text="${topic.location == null ? '-' : topic.location}"></dd>
-            <dt class="col-sm-3">Capacity</dt><dd class="col-sm-9" th:text="${topic.capacity == null ? 'No cap' : topic.capacity}"></dd>
+          <p class="pre-line page-subtitle mt-3" th:text="${topic.description}"></p>
+          <div class="metric-grid my-4">
+            <div class="metric"><div class="metric-value" th:text="${topic.recommendationCount}"></div><div class="metric-label">Recommendations</div></div>
+            <div class="metric"><div class="metric-value" th:text="${topic.enrollmentCount}"></div><div class="metric-label">Enrolled</div></div>
+            <div class="metric"><div class="metric-value" th:text="${topic.capacity == null ? 'Open' : topic.capacity}"></div><div class="metric-label">Capacity</div></div>
+          </div>
+          <dl class="row mt-3 mb-0">
+            <dt class="col-sm-3 text-muted">Requester</dt><dd class="col-sm-9" th:text="${topic.requester.name}"></dd>
+            <dt class="col-sm-3 text-muted">Speaker</dt><dd class="col-sm-9" th:text="${topic.speaker == null ? '-' : topic.speaker.name}"></dd>
+            <dt class="col-sm-3 text-muted">Scheduled</dt><dd class="col-sm-9" th:text="${topic.scheduledAt == null ? '-' : #temporals.format(topic.scheduledAt, 'dd MMM yyyy HH:mm')}"></dd>
+            <dt class="col-sm-3 text-muted">Duration</dt><dd class="col-sm-9" th:text="${topic.durationMinutes == null ? '-' : topic.durationMinutes + ' minutes'}"></dd>
+            <dt class="col-sm-3 text-muted">Location</dt><dd class="col-sm-9" th:text="${topic.location == null ? '-' : topic.location}"></dd>
           </dl>
         </div>
       </section>
 
       <section class="card mt-3" th:if="${topic.status.name() == 'SCHEDULED' || topic.status.name() == 'COMPLETED'}">
-        <div class="card-body">
+        <div class="card-body p-4">
           <h2 class="h5">Enrollments</h2>
           <p class="text-muted" th:text="${topic.enrollmentCount + ' enrolled'}"></p>
-          <ul class="mb-0">
-            <li th:each="e : ${topic.enrollments}" th:text="${e.user.name + ' (' + e.user.email + ')'}"></li>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item px-0" th:each="e : ${topic.enrollments}" th:text="${e.user.name + ' (' + e.user.email + ')'}"></li>
           </ul>
         </div>
       </section>
 
       <section class="card mt-3" th:if="${topic.status.name() == 'COMPLETED'}">
-        <div class="card-body">
+        <div class="card-body p-4">
           <h2 class="h5">Ratings</h2>
           <p class="text-muted" th:text="${#numbers.formatDecimal(topic.averageRating, 1, 1) + ' average from ' + topic.ratings.size() + ' ratings'}"></p>
           <div th:each="r : ${topic.ratings}" class="border-top py-2">
@@ -66,29 +67,32 @@
       </section>
     </div>
     <aside class="col-lg-4">
-      <section class="card">
-        <div class="card-body">
+      <section class="card position-sticky" style="top: 18px">
+        <div class="card-body p-4">
           <h2 class="h5">Actions</h2>
-          <form th:if="${topic.status.name() == 'OPEN'}" th:action="@{/topics/{id}/claim(id=${topic.id})}" method="post" class="mb-2">
+          <p class="text-muted small">Available actions depend on your role and the topic status.</p>
+          <div class="action-stack">
+          <form th:if="${topic.status.name() == 'OPEN'}" th:action="@{/topics/{id}/claim(id=${topic.id})}" method="post">
             <button class="btn btn-success w-100" type="submit">Volunteer as speaker</button>
           </form>
-          <form th:if="${topic.status.name() == 'OPEN' || topic.status.name() == 'CLAIMED'}" th:action="@{/topics/{id}/recommend(id=${topic.id})}" method="post" class="mb-2">
+          <form th:if="${topic.status.name() == 'OPEN' || topic.status.name() == 'CLAIMED'}" th:action="@{/topics/{id}/recommend(id=${topic.id})}" method="post">
             <button class="btn btn-outline-primary w-100" type="submit">Toggle recommendation</button>
           </form>
-          <a th:if="${topic.status.name() == 'OPEN' && topic.requester.id == currentUser.id}" class="btn btn-outline-secondary w-100 mb-2" th:href="@{/topics/{id}/edit(id=${topic.id})}">Edit</a>
-          <form th:if="${topic.status.name() == 'CLAIMED' && topic.speaker != null && topic.speaker.id == currentUser.id}" th:action="@{/topics/{id}/unclaim(id=${topic.id})}" method="post" class="mb-2">
+          <a th:if="${topic.status.name() == 'OPEN' && topic.requester.id == currentUser.id}" class="btn btn-outline-secondary w-100" th:href="@{/topics/{id}/edit(id=${topic.id})}">Edit</a>
+          <form th:if="${topic.status.name() == 'CLAIMED' && topic.speaker != null && topic.speaker.id == currentUser.id}" th:action="@{/topics/{id}/unclaim(id=${topic.id})}" method="post">
             <button class="btn btn-outline-warning w-100" type="submit">Unclaim</button>
           </form>
-          <a th:if="${(topic.status.name() == 'CLAIMED' || topic.status.name() == 'SCHEDULED') && topic.speaker != null && topic.speaker.id == currentUser.id}" class="btn btn-primary w-100 mb-2" th:href="@{/topics/{id}/schedule(id=${topic.id})}">Schedule or update</a>
-          <form th:if="${topic.status.name() == 'SCHEDULED'}" th:action="@{/topics/{id}/enroll(id=${topic.id})}" method="post" class="mb-2">
+          <a th:if="${(topic.status.name() == 'CLAIMED' || topic.status.name() == 'SCHEDULED') && topic.speaker != null && topic.speaker.id == currentUser.id}" class="btn btn-primary w-100" th:href="@{/topics/{id}/schedule(id=${topic.id})}">Schedule or update</a>
+          <form th:if="${topic.status.name() == 'SCHEDULED'}" th:action="@{/topics/{id}/enroll(id=${topic.id})}" method="post">
             <button class="btn btn-success w-100" type="submit">Enroll</button>
           </form>
-          <form th:if="${topic.status.name() == 'SCHEDULED'}" th:action="@{/topics/{id}/unenroll(id=${topic.id})}" method="post" class="mb-2">
+          <form th:if="${topic.status.name() == 'SCHEDULED'}" th:action="@{/topics/{id}/unenroll(id=${topic.id})}" method="post">
             <button class="btn btn-outline-danger w-100" type="submit">Unenroll</button>
           </form>
           <form th:if="${topic.status.name() != 'COMPLETED' && topic.status.name() != 'CANCELLED'}" th:action="@{/topics/{id}/cancel(id=${topic.id})}" method="post">
             <button class="btn btn-danger w-100" type="submit" onclick="return requireConfirm('Cancel this topic/session?')">Cancel</button>
           </form>
+          </div>
         </div>
       </section>
     </aside>
